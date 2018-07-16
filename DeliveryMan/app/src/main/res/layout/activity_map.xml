@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#e62941"
+    tools:context=".MapActivity">
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="384dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        tools:context=".MapsActivity"
+        android:layout_alignParentLeft="true" />
+
+    <Button
+        android:id="@+id/Bruta"
+        android:layout_width="115dp"
+        android:layout_height="37dp"
+
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/btncalcular"
+        android:layout_marginBottom="15dp"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif-condensed"
+        android:text="Show Path"
+        android:textColor="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/BmostrarExistencias"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/btncalcular"
+        android:layout_marginEnd="22dp"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif"
+        android:text="OBTENER PEDIDOS"
+        android:textColor="@android:color/background_light"
+        android:textColorLink="@android:color/background_light" />
+
+    <Button
+        android:id="@+id/btncalcular"
+        android:layout_width="115dp"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="62dp"
+        android:layout_marginStart="22dp"
+        android:background="#e62941"
+        android:fontFamily="sans-serif-condensed"
+        android:text="CALCULAR RUTA"
+        android:textColor="@android:color/background_light"
+        android:textColorLink="@android:color/background_light" />
+
+    <TextView
+        android:id="@+id/Ttotalview"
+        android:layout_width="221dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/map"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="serif-monospace"
+        android:textColor="@android:color/background_light"
+        android:textColorHighlight="@android:color/background_light" />
+
+    <ImageButton
+        android:id="@+id/BlimpiarMapa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="11dp"
+        android:layout_marginTop="60dp"
+        android:background="@color/common_google_signin_btn_text_light_disabled"
+        app:srcCompat="@android:drawable/ic_menu_rotate" />
+
+    <Button
+        android:id="@+id/btnentregalista"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_alignStart="@+id/BmostrarExistencias"
+        android:layout_alignTop="@+id/Bruta"
+        android:background="@color/colorAccent"
+        android:fontFamily="sans-serif"
+        android:text="Entrega Lista"
+        android:textColor="@android:color/background_light" />
+
+
+</RelativeLayout>
