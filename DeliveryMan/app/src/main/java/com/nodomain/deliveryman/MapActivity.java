@@ -84,6 +84,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     public FusedLocationProviderClient mFused;
     static final float DEFAULT_ZOOM = 15f;
     public int count;
+    public int parser;
     public List<LatLng> Points;
     public MarkerOptions start;
     public Marker start1;
@@ -137,6 +138,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
         dataTransfer[0] = mMap;
         dataTransfer[1] = sb.toString();
         dataTransfer[2] = new LatLng(A.latitude, A.longitude);
+
         dataTransfer[3] = new LatLng(B.latitude, B.longitude);
         getDirectionsData.execute(dataTransfer);
     }
@@ -235,12 +237,16 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                             try {
                                 for (int i = 0; i < array2.length; i++) {
 
+                                        parser=Color.BLACK;
+
                                     drawRoute(array2[i].get_origin(), array2[i].get_end());
+
+
                                     finaldistanceaux += array2[i].get_distance();
                                     finaltimeaux += Double.parseDouble(array2[i].get_time());
                                 }
                             } catch (Exception e) {
-                                // Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
                             }
                             ultimotextview = findViewById(R.id.Ttotalview);
 
@@ -350,17 +356,9 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                                                     postParam.put("idpedido3",arrayidpedido.get(2));
                                                     postParam.put("idpedido4",arrayidpedido.get(3));
                                                     postParam.put("idpedido5",arrayidpedido.get(4));
-
                                                 }
-
-
-
-
-
                                                 arrayidpedido = new LinkedList<>();
-
-
-                                                JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,"http://androiddelivery.000webhostapp.com/entregados.php"
+                                                 JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,"http://androiddelivery.000webhostapp.com/entregados.php"
                                                         , new JSONObject(postParam),
                                                         new Response.Listener<JSONObject>() {
 
@@ -741,8 +739,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
 
                     PolylineOptions options2 = new PolylineOptions();
                     //colores
-
-                    options2.color(Color.BLACK);
+                    options2.color(parser);
                     options2.width(5);
                     options2.addAll(PolyUtil.decode(polyline_array[i]));
 
