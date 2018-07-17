@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">ClientSide</string>
+    <string name="API_KEY">AIzaSyB5dTdiyjZijSPPD6za3O7qugaidYNZPTo</string>
+    <string name="API_MATRIX_KEY">AIzaSyBfZc21Ujrrn7hXOXTjIgiS5pOcWPihK9s</string>
+    <string name="mapa">Mapa</string>
+    <string name="save_locations">Save Locations</string>
+    <string-array name="gaseosas">
+        <item> Ninguno</item>
+        <item>Coca-Cola 500ml</item>
+        <item>Coca-Cola 2lts</item>
+        <item>Fanta Mandarina 500ml</item>
+        <item>Fanta Mandarina 2lts</item>
+        <item>Sprite 500ml</item>
+        <item> Sprite 2lts</item>
+
+    </string-array>
+    <string-array name="cantidades">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item> 6</item>
+        <item> 7</item>
+        <item> 8</item>
+        <item> 9</item>
+        <item>10</item>
+    </string-array>
 </resources>
