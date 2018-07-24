@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -104,6 +105,30 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     ImageButton buttoneraser;
     String temporaloptimaltime = "";
     Double temporaloptimaldistance = 0.0;
+    int countaskedtimes=0;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        String s="";
+        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE)
+        {
+            s="Lanscape orientation \n";
+        }
+        else if(newConfig.orientation==Configuration.ORIENTATION_PORTRAIT)
+        {
+            s="Portrait orientation \n";
+        }
+
+        s+="onConfigurationchanged  called"+ ((myApp)getApplicationContext()).inc()+" times";
+        Toast.makeText(this,s,Toast.LENGTH_LONG).show();
+    }
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +154,6 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
         dataTransfer[0] = mMap;
         dataTransfer[1] = sb.toString();
         dataTransfer[2] = new LatLng(A.latitude, A.longitude);
-
         dataTransfer[3] = new LatLng(B.latitude, B.longitude);
         getDirectionsData.execute(dataTransfer);
     }
@@ -474,21 +498,26 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                                 requestQueue.add(jsonArrayRequest);
 
                             }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),"Tienes pedidos pendientes no puedes solicitar mas",Toast.LENGTH_SHORT).show();
-                                List<DestinyPoint> aux2=new ArrayList<>();
-                                BDAyuda aux3=new BDAyuda(getApplicationContext());
-                                aux2=aux3.listarLocalizaciones();
-                                MarkerOptions markaux;
-                                //El objetivo es que con una funcion se llene los puntos con la lista que me va a llegar
-                                LatLng pointaux;
+                            else {
+                                Toast.makeText(getApplicationContext(), "Tienes pedidos pendientes no puedes solicitar mas", Toast.LENGTH_SHORT).show();
+                                if (countaskedtimes == 0) {
 
-                                for (int i = 0; i < aux2.size(); i++) {
-                                    pointaux = new LatLng(aux2.get(i).latitud, aux2.get(i).longitud);
-                                    Points.add(pointaux);
-                                    markaux = new MarkerOptions().position(pointaux).title(aux2.get(i).nombredestino + " Pedido: " + aux2.get(i).pedido);
-                                    mMap.addMarker(markaux);
+                                    List<DestinyPoint> aux2 = new ArrayList<>();
+                                    BDAyuda aux3 = new BDAyuda(getApplicationContext());
+                                    aux2 = aux3.listarLocalizaciones();
+                                    MarkerOptions markaux;
+                                    //El objetivo es que con una funcion se llene los puntos con la lista que me va a llegar
+                                    LatLng pointaux;
+
+                                    for (int i = 0; i < aux2.size(); i++) {
+                                        pointaux = new LatLng(aux2.get(i).latitud, aux2.get(i).longitud);
+
+
+                                        Points.add(pointaux);
+                                        markaux = new MarkerOptions().position(pointaux).title(aux2.get(i).nombredestino + " Pedido: " + aux2.get(i).pedido);
+                                        mMap.addMarker(markaux);
+                                    }
+                                    countaskedtimes++;
                                 }
                             }
                         }
@@ -517,6 +546,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                             Points.add(centralpermanent.getPosition());
                             //la central no se pierde
                             mMap.addMarker(centralpermanent);
+                            countaskedtimes=0;
                         }
                     });
                 }
@@ -580,7 +610,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
         return response;
     }
 
-    private void getLocationPermission() {
+    public void getLocationPermission() {
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         };
