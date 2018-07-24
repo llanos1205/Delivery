@@ -129,7 +129,6 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
         dataTransfer[0] = mMap;
         dataTransfer[1] = sb.toString();
         dataTransfer[2] = new LatLng(A.latitude, A.longitude);
-
         dataTransfer[3] = new LatLng(B.latitude, B.longitude);
         getDirectionsData.execute(dataTransfer);
     }
