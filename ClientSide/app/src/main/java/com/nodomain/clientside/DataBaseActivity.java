@@ -26,6 +26,7 @@ import android.view.ViewGroup.LayoutParams;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -40,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import com.google.maps.android.SphericalUtil;
 import com.nodomain.clientside.ClassesOp.BDAyuda;
 import com.nodomain.clientside.ClassesOp.DestinyPoint;
 import java.io.InputStream;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -58,7 +61,10 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
+import com.nodomain.clientside.ClassesOp.SucursalPoint;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DataBaseActivity extends AppCompatActivity {
@@ -80,6 +86,7 @@ public class DataBaseActivity extends AppCompatActivity {
     int piernacuarto=20;
     int soda500=8;
     int soda2lt=15;
+    int idfinal=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,21 +188,86 @@ public class DataBaseActivity extends AppCompatActivity {
                             {
                                 case R.id.Bsave_DB:
                                 {
-                                    try {
-                                        // developerBD=new BDAyuda(getApplicationContext());
+
+
 
 
 
                                         Pedidos=obtenerPedidos(scantidadpecho.getSelectedItem().toString(),scantidadpierna.getSelectedItem().toString(),smarcag.getSelectedItem().toString(),scantidadgaseosa.getSelectedItem().toString());
                                         int  Precio=obtenerPrecio(scantidadpecho.getSelectedItem().toString(),scantidadpierna.getSelectedItem().toString(),smarcag.getSelectedItem().toString(),scantidadgaseosa.getSelectedItem().toString());
+                                        final LinkedList<SucursalPoint> list=new LinkedList<>();
+                                        final int[] tamano = {0};
+                                    final int[] idtemp = {0};
+                                       //Todo esto va a servir para obtener todas las sucursales con su latitud y longitud para despues comparar cual esta mas cerca
+                                      final RequestQueue queuetemp=Volley.newRequestQueue(getApplicationContext());
+                                      JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET, "http://androiddelivery.000webhostapp.com/sendSucursal.php", null, new Response.Listener<JSONArray>() {
+                                          double finaldist=0.0;
+                                          int op=0;
+
+                                         @Override
+                                          public void onResponse(JSONArray response) {
+                                              for (int i = 0; i < response.length(); i++) {
+                                                  JSONObject jsonObject = null;
+                                                  try {
+                                                      jsonObject = response.getJSONObject(i);
+                                                  } catch (JSONException e) {
+                                                      e.printStackTrace();
+                                                  }
+                                                  SucursalPoint sp= null;
+                                                  try {
+                                                      sp = new SucursalPoint(Double.parseDouble(jsonObject.get("latitud").toString()),Double.parseDouble(jsonObject.get("longitud").toString()),jsonObject.getInt("idsucursal"));
+                                                  } catch (JSONException e) {
+
+                                                  }
+                                                  list.add(sp);
+
+                                                  LatLng latLng=new LatLng(list.getFirst().lat,list.getFirst().lng);
+                                                  LatLng latLng1=new LatLng(currentmarker.getPosition().latitude,currentmarker.getPosition().longitude);
+                                                  double temp=SphericalUtil.computeDistanceBetween(latLng,latLng1);
+                                                  if(op==0)
+                                                  {
+                                                      idfinal=list.getFirst().id;
+                                                      finaldist=temp;
+                                                      idtemp[0] =idfinal;
+                                                      op=1;
+                                                  }
+                                                  else
+                                                  {
+                                                      if(temp<finaldist)
+                                                      {
+                                                          idfinal=list.getFirst().id;
+                                                          finaldist=temp;
+                                                          idtemp[0] =idfinal;
+                                                      }
+                                                  }
+                                                  list.removeFirst();
+
+                                              }
 
 
-                                        //developerBD.agregarLocalizacion(Nom.getText().toString(), String.valueOf(currentmarker.getPosition().latitude), String.valueOf(currentmarker.getPosition().longitude),Pedidos);
+
+                                          }
+
+                                      }, new Response.ErrorListener() {
+                                          @Override
+                                          public void onErrorResponse(VolleyError error) {
+                                              Toast.makeText(getApplicationContext(),"Error",Toast.LENGTH_SHORT).show();
+                                          }
+                                      });
+
+                                      queuetemp.add(jsonArrayRequest);
+                                      //Esto calcula el mayor
+
+
+
+                                              //developerBD.agregarLocalizacion(Nom.getText().toString(), String.valueOf(currentmarker.getPosition().latitude), String.valueOf(currentmarker.getPosition().longitude),Pedidos);
                                         final RequestQueue queue=Volley.newRequestQueue(getApplicationContext());
                                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
                                         Date date = new Date();
                                         DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
                                         String fecha = dateFormat.format(date);
+
+
 
 
 
@@ -214,6 +286,8 @@ public class DataBaseActivity extends AppCompatActivity {
                                         postParam.put("nombrecliente", Nom.getText().toString());
                                         postParam.put("productos", Pedidos);
                                         postParam.put("montototal", String.valueOf(Precio)+" Bs");
+                                        //Convertir el id final en un int en tu php close
+                                        postParam.put("idsucursal",String.valueOf(idfinal));
                                         postParam.put("basesdatos","id6044948_pedido");
 
 
@@ -257,11 +331,7 @@ public class DataBaseActivity extends AppCompatActivity {
                                         Toast.makeText(DataBaseActivity.this, "Insertado", Toast.LENGTH_LONG).show();
                                         UpdateSpinners(slugares);
                                         //developerBD.close();
-                                    }catch(Exception e)
-                                    {
-                                        Toast.makeText(DataBaseActivity.this,e.getMessage(),Toast.LENGTH_SHORT).show();
 
-                                    }
                                     break;
 
                                 }
@@ -273,6 +343,7 @@ public class DataBaseActivity extends AppCompatActivity {
 
                         }
                     });
+
                     Bayudaprecios.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
