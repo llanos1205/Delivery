@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -104,6 +105,30 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     ImageButton buttoneraser;
     String temporaloptimaltime = "";
     Double temporaloptimaldistance = 0.0;
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        String s="";
+        if(newConfig.orientation==Configuration.ORIENTATION_LANDSCAPE)
+        {
+            s="Lanscape orientation \n";
+        }
+        else if(newConfig.orientation==Configuration.ORIENTATION_PORTRAIT)
+        {
+            s="Portrait orientation \n";
+        }
+
+        s+="onConfigurationchanged  called"+ ((myApp)getApplicationContext()).inc()+" times";
+        Toast.makeText(this,s,Toast.LENGTH_LONG).show();
+    }
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -579,7 +604,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
         return response;
     }
 
-    private void getLocationPermission() {
+    public void getLocationPermission() {
         String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.ACCESS_COARSE_LOCATION
         };
