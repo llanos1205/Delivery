@@ -1,8 +1,6 @@
 package com.nodomain.deliveryman;
 
 import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -37,7 +35,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,7 +42,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -57,8 +53,8 @@ import com.google.maps.android.PolyUtil;
 import com.nodomain.deliveryman.ClassesOp.BDAyuda;
 import com.nodomain.deliveryman.ClassesOp.DestinyPoint;
 import com.nodomain.deliveryman.ClassesOp.GeoTask;
-import com.nodomain.deliveryman.ClassesOp.Prim;
 import com.nodomain.deliveryman.ClassesOp.RutaArco;
+import com.nodomain.deliveryman.ClassesOp.ATSP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -74,8 +70,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
 
@@ -102,7 +96,6 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     String _time;
     int contador = 0;
     List<RutaArco> aux = new ArrayList<>();
-    Prim prim;
     public LinkedList<String> arrayidpedido=new LinkedList<>();
     List<Double> distancaistemp = new ArrayList<>();
     List<Double> tempotemp = new ArrayList<>();
@@ -111,8 +104,6 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     ImageButton buttoneraser;
     String temporaloptimaltime = "";
     Double temporaloptimaldistance = 0.0;
-    Prim p;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,9 +215,9 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
 
                             int vertices = Points.size();
                             int tamano = contador;
-                            Prim prim = new Prim(rutas, vertices, contador);
-                            array2 = new RutaArco[100];
-                            array2 = prim.indicesaArco();
+                            ATSP atspsango=new ATSP(vertices,rutas,contador);
+                           array2 = new RutaArco[100];
+                            array2=atspsango.ejecutar();
 
                             double finaldistanceaux = 0;
                             double finaltimeaux = 0;
