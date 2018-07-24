@@ -105,7 +105,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     ImageButton buttoneraser;
     String temporaloptimaltime = "";
     Double temporaloptimaldistance = 0.0;
-
+    int countaskedtimes=0;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig)
@@ -498,21 +498,26 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                                 requestQueue.add(jsonArrayRequest);
 
                             }
-                            else
-                            {
-                                Toast.makeText(getApplicationContext(),"Tienes pedidos pendientes no puedes solicitar mas",Toast.LENGTH_SHORT).show();
-                                List<DestinyPoint> aux2=new ArrayList<>();
-                                BDAyuda aux3=new BDAyuda(getApplicationContext());
-                                aux2=aux3.listarLocalizaciones();
-                                MarkerOptions markaux;
-                                //El objetivo es que con una funcion se llene los puntos con la lista que me va a llegar
-                                LatLng pointaux;
+                            else {
+                                Toast.makeText(getApplicationContext(), "Tienes pedidos pendientes no puedes solicitar mas", Toast.LENGTH_SHORT).show();
+                                if (countaskedtimes == 0) {
 
-                                for (int i = 0; i < aux2.size(); i++) {
-                                    pointaux = new LatLng(aux2.get(i).latitud, aux2.get(i).longitud);
-                                    Points.add(pointaux);
-                                    markaux = new MarkerOptions().position(pointaux).title(aux2.get(i).nombredestino + " Pedido: " + aux2.get(i).pedido);
-                                    mMap.addMarker(markaux);
+                                    List<DestinyPoint> aux2 = new ArrayList<>();
+                                    BDAyuda aux3 = new BDAyuda(getApplicationContext());
+                                    aux2 = aux3.listarLocalizaciones();
+                                    MarkerOptions markaux;
+                                    //El objetivo es que con una funcion se llene los puntos con la lista que me va a llegar
+                                    LatLng pointaux;
+
+                                    for (int i = 0; i < aux2.size(); i++) {
+                                        pointaux = new LatLng(aux2.get(i).latitud, aux2.get(i).longitud);
+
+
+                                        Points.add(pointaux);
+                                        markaux = new MarkerOptions().position(pointaux).title(aux2.get(i).nombredestino + " Pedido: " + aux2.get(i).pedido);
+                                        mMap.addMarker(markaux);
+                                    }
+                                    countaskedtimes++;
                                 }
                             }
                         }
@@ -541,6 +546,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                             Points.add(centralpermanent.getPosition());
                             //la central no se pierde
                             mMap.addMarker(centralpermanent);
+                            countaskedtimes=0;
                         }
                     });
                 }
