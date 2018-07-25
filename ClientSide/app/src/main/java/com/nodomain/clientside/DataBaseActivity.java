@@ -194,7 +194,7 @@ public class DataBaseActivity extends AppCompatActivity {
 
 
                                         Pedidos=obtenerPedidos(scantidadpecho.getSelectedItem().toString(),scantidadpierna.getSelectedItem().toString(),smarcag.getSelectedItem().toString(),scantidadgaseosa.getSelectedItem().toString());
-                                        int  Precio=obtenerPrecio(scantidadpecho.getSelectedItem().toString(),scantidadpierna.getSelectedItem().toString(),smarcag.getSelectedItem().toString(),scantidadgaseosa.getSelectedItem().toString());
+                                        final int  Precio=obtenerPrecio(scantidadpecho.getSelectedItem().toString(),scantidadpierna.getSelectedItem().toString(),smarcag.getSelectedItem().toString(),scantidadgaseosa.getSelectedItem().toString());
                                         final LinkedList<SucursalPoint> list=new LinkedList<>();
                                         final int[] tamano = {0};
                                     final int[] idtemp = {0};
@@ -243,6 +243,73 @@ public class DataBaseActivity extends AppCompatActivity {
                                                   list.removeFirst();
 
                                               }
+                                             final RequestQueue queue=Volley.newRequestQueue(getApplicationContext());
+                                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                             Date date = new Date();
+                                             DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+                                             String fecha = dateFormat.format(date);
+
+
+
+
+
+
+                                             Calendar calendario = Calendar.getInstance();
+                                             int hora =calendario.get(Calendar.HOUR_OF_DAY);
+                                             int minutos = calendario.get(Calendar.MINUTE);
+                                             int segundos = calendario.get(Calendar.SECOND);
+
+                                             Map<String, String> postParam= new HashMap<String, String>();
+                                             postParam.put("fecha", fecha);
+                                             postParam.put("hora", String.valueOf(hora)+":"+String.valueOf(minutos)+":"+String.valueOf(segundos));
+                                             postParam.put("lat", String.valueOf(currentmarker.getPosition().latitude));
+                                             postParam.put("longitud", String.valueOf(currentmarker.getPosition().longitude));
+                                             postParam.put("nit", ednit.getText().toString());
+                                             postParam.put("nombrecliente", Nom.getText().toString());
+                                             postParam.put("productos", Pedidos);
+                                             postParam.put("montototal", String.valueOf(Precio)+" Bs");
+                                             //Convertir el id final en un int en tu php close
+                                             postParam.put("idsucursal",String.valueOf(idfinal));
+                                             postParam.put("basesdatos","id6044948_pedido");
+
+
+                                             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                                                     url, new JSONObject(postParam),
+                                                     new Response.Listener<JSONObject>() {
+
+                                                         @Override
+                                                         public void onResponse(JSONObject response) {
+
+                                                             Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_SHORT).show();
+                                                             queue.stop();
+                                                         }
+                                                     }, new Response.ErrorListener() {
+
+                                                 @Override
+                                                 public void onErrorResponse(VolleyError error) {
+
+                                                     queue.stop();
+
+                                                 }
+                                             }) {
+
+                                                 /**
+                                                  * Passing some request headers
+                                                  * */
+                                                 @Override
+                                                 public Map<String, String> getHeaders() throws AuthFailureError {
+                                                     HashMap<String, String> headers = new HashMap<String, String>();
+                                                     headers.put("Content-Type", "application/json; charset=utf-8");
+                                                     return headers;
+                                                 }
+
+
+
+                                             };
+
+
+                                             // Adding request to request queue
+                                             queue.add(jsonObjReq);
 
 
 
@@ -261,73 +328,7 @@ public class DataBaseActivity extends AppCompatActivity {
 
 
                                               //developerBD.agregarLocalizacion(Nom.getText().toString(), String.valueOf(currentmarker.getPosition().latitude), String.valueOf(currentmarker.getPosition().longitude),Pedidos);
-                                        final RequestQueue queue=Volley.newRequestQueue(getApplicationContext());
-                                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                                        Date date = new Date();
-                                        DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
-                                        String fecha = dateFormat.format(date);
 
-
-
-
-
-
-                                        Calendar calendario = Calendar.getInstance();
-                                        int hora =calendario.get(Calendar.HOUR_OF_DAY);
-                                        int minutos = calendario.get(Calendar.MINUTE);
-                                        int segundos = calendario.get(Calendar.SECOND);
-
-                                        Map<String, String> postParam= new HashMap<String, String>();
-                                        postParam.put("fecha", fecha);
-                                        postParam.put("hora", String.valueOf(hora)+":"+String.valueOf(minutos)+":"+String.valueOf(segundos));
-                                        postParam.put("lat", String.valueOf(currentmarker.getPosition().latitude));
-                                        postParam.put("longitud", String.valueOf(currentmarker.getPosition().longitude));
-                                        postParam.put("nit", ednit.getText().toString());
-                                        postParam.put("nombrecliente", Nom.getText().toString());
-                                        postParam.put("productos", Pedidos);
-                                        postParam.put("montototal", String.valueOf(Precio)+" Bs");
-                                        //Convertir el id final en un int en tu php close
-                                        postParam.put("idsucursal",String.valueOf(idfinal));
-                                        postParam.put("basesdatos","id6044948_pedido");
-
-
-                                        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
-                                                url, new JSONObject(postParam),
-                                                new Response.Listener<JSONObject>() {
-
-                                                    @Override
-                                                    public void onResponse(JSONObject response) {
-
-                                                        Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_SHORT).show();
-                                                        queue.stop();
-                                                    }
-                                                }, new Response.ErrorListener() {
-
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-
-                                                queue.stop();
-
-                                            }
-                                        }) {
-
-                                            /**
-                                             * Passing some request headers
-                                             * */
-                                            @Override
-                                            public Map<String, String> getHeaders() throws AuthFailureError {
-                                                HashMap<String, String> headers = new HashMap<String, String>();
-                                                headers.put("Content-Type", "application/json; charset=utf-8");
-                                                return headers;
-                                            }
-
-
-
-                                        };
-
-
-                                        // Adding request to request queue
-                                        queue.add(jsonObjReq);
                                         Toast.makeText(DataBaseActivity.this, "Insertado", Toast.LENGTH_LONG).show();
                                         UpdateSpinners(slugares);
                                         //developerBD.close();
