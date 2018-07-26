@@ -97,10 +97,10 @@ public class Sucursal extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-                googleMap.setTrafficEnabled(true);
-                googleMap.setIndoorEnabled(true);
-                googleMap.setBuildingsEnabled(true);
-                mMap.getUiSettings().setZoomControlsEnabled(true);
+              //  googleMap.setTrafficEnabled(true);
+               // googleMap.setIndoorEnabled(true);
+                //googleMap.setBuildingsEnabled(true);
+                //mMap.getUiSettings().setZoomControlsEnabled(true);
 
                 Toast.makeText(Sucursal.this, "Map ready", Toast.LENGTH_LONG).show();
 
