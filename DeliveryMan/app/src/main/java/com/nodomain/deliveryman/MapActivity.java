@@ -230,7 +230,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
 
                                     try {
                                         coordenadassucursal=new LatLng(Double.parseDouble(response.get("latitud").toString()),Double.parseDouble(response.get("longitud").toString()));
-                                        mMap.addMarker(new MarkerOptions().position(coordenadassucursal).title("6"));
+                                        mMap.addMarker(new MarkerOptions().position(coordenadassucursal).title("Central").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                                         Points.add(new LatLng(coordenadassucursal.latitude,coordenadassucursal.longitude));
 
                                     } catch (JSONException e) {
@@ -584,9 +584,9 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                             ultimotextview = findViewById(R.id.Ttotalview);
                             ultimotextview.setText("");
                             Points=new ArrayList<>();
-                            Points.add(centralpermanent.getPosition());
+                            Points.add(coordenadassucursal);
                             //la central no se pierde
-                            mMap.addMarker(centralpermanent);
+                            mMap.addMarker(new MarkerOptions().title("central").position(coordenadassucursal).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
                             countaskedtimes=0;
                         }
                     });
