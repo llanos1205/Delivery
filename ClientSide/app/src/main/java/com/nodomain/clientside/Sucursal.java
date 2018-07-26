@@ -97,7 +97,6 @@ public class Sucursal extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-                googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
                 googleMap.setTrafficEnabled(true);
                 googleMap.setIndoorEnabled(true);
                 googleMap.setBuildingsEnabled(true);
