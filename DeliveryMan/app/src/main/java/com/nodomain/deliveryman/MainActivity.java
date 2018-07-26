@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onResponse(JSONObject response) {
 
                                 try {
-                                    if((boolean)response.get("resultado")==true)
+                                    if((int)response.get("resultado")==1)
                                     {
                                         startActivity(new Intent(MainActivity.this,MapActivity.class));
                                     }
@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                        error.printStackTrace();
 
                     }
+                    int m;
                 }) {
 
                     /**
