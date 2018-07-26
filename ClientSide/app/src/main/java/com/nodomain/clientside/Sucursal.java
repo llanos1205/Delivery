@@ -110,22 +110,6 @@ public class Sucursal extends AppCompatActivity {
                     }
                     // mMap.setMyLocationEnabled(true);
                     mMap.getUiSettings().setMyLocationButtonEnabled(false);
-
-
-
-
-                    mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
-                        @Override
-                        public void onMapLongClick(LatLng latLng) {
-
-                            currentmarker.setPosition(latLng);
-
-
-
-                        }
-                    });
-
-
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://androiddelivery.000webhostapp.com/sendSucursal.php", null, new Response.Listener<JSONArray>() {
                         @Override
@@ -193,11 +177,6 @@ public class Sucursal extends AppCompatActivity {
                         }
                     });
                     requestQueue.add(jsonArrayRequest);
-
-
-
-
-
                 }
             }
         });
