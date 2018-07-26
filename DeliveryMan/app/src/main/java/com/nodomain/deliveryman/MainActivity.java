@@ -77,7 +77,9 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     if((int)response.get("resultado")==1)
                                     {
-                                        startActivity(new Intent(MainActivity.this,MapActivity.class));
+                                        Intent intent=new Intent(MainActivity.this,MapActivity.class);
+                                        intent.putExtra("idsucursal",String.valueOf(idsucursal.getText()));
+                                        startActivity(intent);
                                     }
                                     else
                                     {

@@ -106,6 +106,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
     String temporaloptimaltime = "";
     Double temporaloptimaldistance = 0.0;
     int countaskedtimes=0;
+    public LatLng coordenadassucursal;
 
     @Override
     public void onConfigurationChanged(Configuration newConfig)
@@ -142,6 +143,7 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
         BmarcadoresDB = findViewById(R.id.BmostrarExistencias);
     }
 
+
     public void drawRoute(LatLng A, LatLng B) {
         StringBuilder sb;
         Object[] dataTransfer = new Object[4];
@@ -175,11 +177,10 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                         if (task.isSuccessful()) {
                             Location current = (Location) task.getResult();
                             mooveCamera(new LatLng(current.getLatitude(), current.getLongitude()), DEFAULT_ZOOM);
-                            MarkerOptions auxcentral = new MarkerOptions().position(new LatLng(current.getLatitude(), current.getLongitude())).
-                                    title(String.valueOf(count)).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title("Central");
-                            Points.add(new LatLng(current.getLatitude(), current.getLongitude()));
-                            centralpermanent=auxcentral;
-                            mMap.addMarker(auxcentral);
+
+
+
+
 
                         } else {
                             Toast.makeText(MapActivity.this, "Null location", Toast.LENGTH_LONG).show();
@@ -210,64 +211,97 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                     //para crear marcadores en largo presionamiento
                     // updateDBdotsonMAP();
 
-                    //para ver detalles del marcador
-                    Bruta.setOnClickListener(new View.OnClickListener() {
-                        @RequiresApi(api = Build.VERSION_CODES.N)
-                        @Override
-                        public void onClick(View view) {
-                            contador = 0;
-                            RutaArco u;
-                            rutas = new RutaArco[100];
-                            if(Points.size()<=1)
-                            {
-                                Toast.makeText(getApplicationContext(),"No hay ruta por mostrar",Toast.LENGTH_LONG).show();
-                                return;
-                            }
-                            //actualiza la distancaisen orden(creo)
-                            for (int i = 0; i < aux.size(); i++) {
-                                aux.get(i).set_distance(distancaistemp.get(i));
-                                aux.get(i).set_time(tempotemp.get(i).toString());
-                            }
-                            ///
 
-                            while (contador < aux.size()) {
-                                u = new RutaArco(aux.get(contador).get_origin(), aux.get(contador).get_end(), aux.get(contador).get_distance(), aux.get(contador).get_time());
-                                //aqui es el error
-                                rutas[contador] = u;
-                                contador++;
-                            }
+                    //Esto sirve para obtener las coordenadas
+                    JSONObject jsonObject=new JSONObject();
+                    try {
+                        jsonObject.put("idsucursal",getIntent().getExtras().get("idsucursal").toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                            int vertices = Points.size();
-                            int tamano = contador;
-                            ATSP atspsango=new ATSP(vertices,rutas,contador);
-                           array2 = new RutaArco[100];
-                            array2=atspsango.ejecutar();
+                    RequestQueue requestQueue=Volley.newRequestQueue(getApplicationContext());
 
-                            double finaldistanceaux = 0;
-                            double finaltimeaux = 0;
+                    JsonObjectRequest jsonrequest = new JsonObjectRequest(Request.Method.POST, "http://androiddelivery.000webhostapp.com/sendPos.php"
+                            , jsonObject,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+
+                                    try {
+                                        coordenadassucursal=new LatLng(Double.parseDouble(response.get("latitud").toString()),Double.parseDouble(response.get("longitud").toString()));
+                                        mMap.addMarker(new MarkerOptions().position(coordenadassucursal).title("6"));
+                                        Points.add(new LatLng(coordenadassucursal.latitude,coordenadassucursal.longitude));
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
 
 
-
-
-                            try {
-                                for (int i = 0; i < array2.length; i++) {
-
-                                        parser=Color.BLACK;
-
-                                    drawRoute(array2[i].get_origin(), array2[i].get_end());
-
-
-                                    finaldistanceaux += array2[i].get_distance();
-                                    finaltimeaux += Double.parseDouble(array2[i].get_time());
                                 }
-                            } catch (Exception e) {
-                                Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-                            }
-                            ultimotextview = findViewById(R.id.Ttotalview);
-
-                            ultimotextview.setText("Total: " + Math.floor(finaldistanceaux) + " Km," + Math.floor(finaltimeaux) + " Mins");
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                         Toast.makeText(getApplicationContext(),"Error coordenadas",Toast.LENGTH_SHORT).show();
                         }
                     });
+                    requestQueue.add(jsonrequest);
+
+                            //para ver detalles del marcador
+                            Bruta.setOnClickListener(new View.OnClickListener() {
+                                @RequiresApi(api = Build.VERSION_CODES.N)
+                                @Override
+                                public void onClick(View view) {
+                                    contador = 0;
+                                    RutaArco u;
+                                    rutas = new RutaArco[100];
+                                    if (Points.size() <= 1) {
+                                        Toast.makeText(getApplicationContext(), "No hay ruta por mostrar", Toast.LENGTH_LONG).show();
+                                        return;
+                                    }
+                                    //actualiza la distancaisen orden(creo)
+                                    for (int i = 0; i < aux.size(); i++) {
+                                        aux.get(i).set_distance(distancaistemp.get(i));
+                                        aux.get(i).set_time(tempotemp.get(i).toString());
+                                    }
+                                    ///
+
+                                    while (contador < aux.size()) {
+                                        u = new RutaArco(aux.get(contador).get_origin(), aux.get(contador).get_end(), aux.get(contador).get_distance(), aux.get(contador).get_time());
+                                        //aqui es el error
+                                        rutas[contador] = u;
+                                        contador++;
+                                    }
+
+                                    int vertices = Points.size();
+                                    int tamano = contador;
+                                    ATSP atspsango = new ATSP(vertices, rutas, contador);
+                                    array2 = new RutaArco[100];
+                                    array2 = atspsango.ejecutar();
+
+                                    double finaldistanceaux = 0;
+                                    double finaltimeaux = 0;
+
+
+                                    try {
+                                        for (int i = 0; i < array2.length; i++) {
+
+                                            parser = Color.BLACK;
+
+                                            drawRoute(array2[i].get_origin(), array2[i].get_end());
+
+
+                                            finaldistanceaux += array2[i].get_distance();
+                                            finaltimeaux += Double.parseDouble(array2[i].get_time());
+                                        }
+                                    } catch (Exception e) {
+                                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                                    }
+                                    ultimotextview = findViewById(R.id.Ttotalview);
+
+                                    ultimotextview.setText("Total: " + Math.floor(finaldistanceaux) + " Km," + Math.floor(finaltimeaux) + " Mins");
+                                }
+                            });
                     Bcalculo.setOnClickListener(new View.OnClickListener() {
                                                     @RequiresApi(api = Build.VERSION_CODES.N)
                                                     @Override
@@ -438,9 +472,16 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                             SQLiteDatabase db=aux.getReadableDatabase();
                             if(checkEmpty(db,"PEDIDOS")) {
 
-
                                 RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, "http://androiddelivery.000webhostapp.com/send.php", null, new Response.Listener<JSONArray>() {
+                                JSONObject jsonObject1=new JSONObject();
+                                try {
+                                    jsonObject1.put("idsucursal",getIntent().getExtras().get("idsucursal").toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                JSONArray jsonArray1=new JSONArray();
+                                jsonArray1.put(jsonObject1);
+                                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.POST, "http://androiddelivery.000webhostapp.com/send.php", jsonArray1, new Response.Listener<JSONArray>() {
                                     @Override
                                     public void onResponse(JSONArray response) {
                                         BDAyuda developerBD = new BDAyuda(getApplicationContext());
