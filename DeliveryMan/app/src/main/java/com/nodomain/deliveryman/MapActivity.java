@@ -414,15 +414,15 @@ public class MapActivity extends AppCompatActivity implements GeoTask.Geo {
                                                             @Override
                                                             public void onResponse(JSONObject response) {
 
-                                                                Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_SHORT).show();
-                                                                queue.stop();
+
+
                                                             }
                                                         }, new Response.ErrorListener() {
 
                                                     @Override
                                                     public void onErrorResponse(VolleyError error) {
 
-                                                        queue.stop();
+
 
                                                     }
                                                 }) {
