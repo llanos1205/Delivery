@@ -97,7 +97,11 @@ public class Sucursal extends AppCompatActivity {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
-
+                googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                googleMap.setTrafficEnabled(true);
+                googleMap.setIndoorEnabled(true);
+                googleMap.setBuildingsEnabled(true);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
 
                 Toast.makeText(Sucursal.this, "Map ready", Toast.LENGTH_LONG).show();
 
@@ -208,7 +212,6 @@ public class Sucursal extends AppCompatActivity {
             }
         } catch (SecurityException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
-
         }
     }
     private void mooveCamera(LatLng coordinates, float zoom) {
