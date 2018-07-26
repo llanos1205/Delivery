@@ -173,7 +173,10 @@ public class Sucursal extends AppCompatActivity {
                                             marcadorcentral.getPosition().latitude,
                                             marcadorcentral.getPosition().longitude,
                                             r);
-                                    markaux = new MarkerOptions().position(pointaux).title(localizaciones.get(i).nombredestino + " Pedido: " + localizaciones.get(i).pedido).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)).title(String.valueOf(Math.round(((r[0])*100.0)/100.0)/1000.0)+" Km");
+                                    markaux = new MarkerOptions().position(pointaux)
+                                            .title(localizaciones.get(i).nombredestino + " Pedido: " + localizaciones.get(i).pedido)
+                                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                            .title(String.valueOf(Math.round(((r[0])*100.0)/100.0)/1000.0)+" Km");
                                     mMap.addMarker(markaux);
                                 }
 
